@@ -1,4 +1,5 @@
-﻿using api_dapper.Services;
+﻿using api_dapper.Dto;
+using api_dapper.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,45 @@ namespace api_dapper.Controllers
             }
 
             return Ok(usuarios);
+        }
+
+        [HttpGet("{usuarioId}")]
+        public async Task<IActionResult> BuscarUsuarioPorId(int usuarioId)
+        {
+            var usuario = await _usuarioInterface.BuscarUsuarioPorId(usuarioId);
+            
+            if (usuario.Status == false)
+            {
+                return NotFound(usuario);
+            }
+            
+            return Ok(usuario);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CriarUsuario(UsuarioCriarDto usuarioCriarDto)
+        {
+            var usuario = await _usuarioInterface.CriarUsuario(usuarioCriarDto);
+
+            if (usuario.Status == false)
+            {
+                return BadRequest(usuario);
+            }
+
+            return Ok(usuario);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditarUsuario(UsuarioEditarDto usuarioEditarDto)
+        {
+            var usuario = await _usuarioInterface.EditarUsuario(usuarioEditarDto);
+
+            if (usuario.Status == false)
+            {
+                return BadRequest(usuario);
+            }
+
+            return Ok(usuario);
         }
     }
 }
