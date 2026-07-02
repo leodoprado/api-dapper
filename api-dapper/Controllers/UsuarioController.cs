@@ -66,5 +66,18 @@ namespace api_dapper.Controllers
 
             return Ok(usuario);
         }
+
+        [HttpDelete("{usuarioId}")]
+        public async Task<IActionResult> RemoverUsuario(int usuarioId)
+        {
+            var usuario = await _usuarioInterface.RemoverUsuario(usuarioId);
+
+            if (usuario.Status == false)
+            {
+                return BadRequest(usuario);
+            }
+
+            return Ok(usuario);
+        }
     }
 }

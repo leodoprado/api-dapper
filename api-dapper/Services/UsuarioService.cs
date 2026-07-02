@@ -123,5 +123,31 @@ namespace api_dapper.Services
 
             return response;
         }
+
+        public async Task<ResponseModel<List<UsuarioListarDto>>> RemoverUsuario(int usuarioId)
+        {
+            ResponseModel<List<UsuarioListarDto>> response = new ResponseModel<List<UsuarioListarDto>>();
+
+            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            {
+                var usuariosBanco = await connection.ExecuteAsync("DELETE FROM Usuarios WHERE Id = @Id", new { Id = usuarioId });
+                
+                if (usuariosBanco == 0)
+                {
+                    response.Mensagem = "Erro ao remover usuário.";
+                    response.Status = false;
+                    return response;
+                }
+                
+
+                var usuarios = await ListarUsuarios(connection);
+                var usuariosMapeados = _mapper.Map<List<UsuarioListarDto>>(usuarios);
+
+                response.Dados = usuariosMapeados;
+                response.Mensagem = "Usuário removido com sucesso.";
+            }
+
+            return response;
+        }
     }
 }
